@@ -28,7 +28,7 @@ bot.onText(/\/search (.+)/, (msg, match) => {
   const resp = match[1];
   opensubtitle.search().then(subtitles=>{
   	  bot.sendMessage(chatId, JSON.stringify(subtitles.es), {
-  	  	reply_markup:[{text:'some subtitle', url:subtitles.es[0].url}]
+  	  	reply_markup:[[{text:'some subtitle', url:subtitles.es[0].url}]]
   	  });
   })
 });

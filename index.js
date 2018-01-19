@@ -4,7 +4,6 @@ const TelegramBot = require('node-telegram-bot-api');
 const opensubtitle = require('./opensubtitle')
 const files = require('./files')
 const _ = require('lodash')
-const axios = require('axios')
 
 const options = {
   webHook: {
@@ -61,11 +60,3 @@ bot.onText(/\/doc.*/, (msg) => {
   const stream = files.downloadFile(url)
   bot.sendDocument(msg.chat.id, stream);
 });
-
-
-/*
-axios({
-  method:'get',
-  url:'http://bit.ly/2mTM3nY',
-  responseType:'stream'
-})*/

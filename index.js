@@ -51,7 +51,7 @@ bot.onText(/\/help.*/, (msg) => {
 
 bot.on('callback_query', (msg)=>{
 	console.log(msg)
-	bot.answerCallbackQuery(msg.id, msg.data)
+	bot.sendMessage(msg.from.id, msg.data)
 })
 
 /*

@@ -31,15 +31,14 @@ bot.onText(/\/search (.+)/, (msg, match) => {
   	const buttons = _.map(subtitles.es, (subtitle)=>{
   		return [{
   			text:subtitle.filename, 
-  			//url:subtitle.url,
   			callback_data: subtitle.url
   		}] 
   	})
 
 	  bot.sendMessage(chatId, 'Subtitulos:', {
-	  	reply_markup:{
+	  	reply_markup: JSON.stringify({
 	  		inline_keyboard: buttons
-	  	}
+	  	})
 	  });
   })
 });

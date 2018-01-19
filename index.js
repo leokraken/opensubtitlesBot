@@ -28,6 +28,7 @@ bot.onText(/\/search (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   const resp = match[1];
   opensubtitle.search().then(subtitles=>{
+  	console.log(subtitles)
   	const buttons = _.map(subtitles.es, (subtitle)=>{
   		return [{
   			text:subtitle.filename, 
@@ -50,7 +51,7 @@ bot.onText(/\/help.*/, (msg) => {
 
 bot.on('callback_query', (msg)=>{
 	console.log(msg)
-	bot.answerCallbackQuery(msg.id, JSON.stringify(msg))
+	bot.answerCallbackQuery(msg.id, Jmsg.data)
 })
 
 /*

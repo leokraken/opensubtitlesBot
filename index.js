@@ -2,7 +2,7 @@
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 const TelegramBot = require('node-telegram-bot-api');
 const opensubtitle = require('./opensubtitle')
-
+const _ = require('lodash')
 
 const options = {
   webHook: {
@@ -27,11 +27,15 @@ bot.onText(/\/search (.+)/, (msg, match) => {
   const chatId = msg.chat.id;
   const resp = match[1];
   opensubtitle.search().then(subtitles=>{
-  	  bot.sendMessage(chatId, JSON.stringify(subtitles.es), {
-  	  	reply_markup:{
-  	  		inline_keyboard: [[{text:'some subtitle', url:subtitles.es[0].url}]]
-  	  	}
-  	  });
+  	const buttons = _.map(subtitles.es, (subtitle)=>{
+  		return [{text:subtitle.filename, url:subtitle.url}] 
+  	})
+
+	  bot.sendMessage(chatId, JSON.stringify(subtitles.es), {
+	  	reply_markup:{
+	  		inline_keyboard: buttons
+	  	}
+	  });
   })
 });
 

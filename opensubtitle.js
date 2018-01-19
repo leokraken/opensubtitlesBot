@@ -25,6 +25,7 @@ function search(imdb){
 	    gzip: false                  // returns url to gzipped subtitles, defaults to false 
 	}).then(subtitles => {
 		console.log(subtitles)
+		return subtitles
 	})
 }
 

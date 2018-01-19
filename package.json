@@ -13,6 +13,7 @@
     "body-parser": "^1.17.1",
     "express": "^4.15.3",
     "node-telegram-bot-api": "^0.27.1",
+    "opensubtitles-api": "^4.0.0",
     "telebot": "^1.0.7"
   },
   "engines": {

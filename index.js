@@ -2,6 +2,7 @@
 const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 const TelegramBot = require('node-telegram-bot-api');
 const opensubtitle = require('./opensubtitle')
+const files = require('./files')
 const _ = require('lodash')
 const axios = require('axios')
 
@@ -51,8 +52,17 @@ bot.onText(/\/help.*/, (msg) => {
 
 bot.on('callback_query', (msg)=>{
 	console.log(msg)
+	bot.answerCallbackQuery(msg.id, 'File send ;)');
 	bot.sendMessage(msg.from.id, msg.data)
 })
+
+bot.onText(/\/doc.*/, (msg) => {
+  const url = 'https://dl.opensubtitles.org/en/download/src-api/vrf-19e20c62/sid-LUrC,E4i2nFlPtlmJ-kzFUU1Ox3/filead/1955760897'
+  files.downloadFile(url).then(data=>{
+  	  bot.sendDocument(msg.chat.id, data);
+  })
+});
+
 
 /*
 axios({

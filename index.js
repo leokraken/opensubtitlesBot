@@ -58,9 +58,9 @@ bot.on('callback_query', (msg)=>{
 
 bot.onText(/\/doc.*/, (msg) => {
   const url = 'https://dl.opensubtitles.org/en/download/src-api/vrf-19e20c62/sid-LUrC,E4i2nFlPtlmJ-kzFUU1Ox3/filead/1955760897'
-  files.downloadFile(url).then(data=>{
-  	  bot.sendDocument(msg.chat.id, data, {contentType:'text/plain'});
-  })
+  //files.downloadFile(url).then(data=>{
+  	  bot.sendDocument(msg.chat.id, url);
+  //})
 });
 
 

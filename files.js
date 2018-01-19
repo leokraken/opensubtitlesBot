@@ -3,8 +3,13 @@ const axios = require('axios')
 function downloadFile(url){
 	return axios({
 	  	method:'get',
-	  	url:url
-	}).then(response=> new Buffer(response.data))
+	  	url:url,
+	  	responseType:'stream'
+
+	}).then(response=> {
+		console.log(response)
+		return response.data
+	})
 }
 
 module.exports = {

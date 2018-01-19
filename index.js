@@ -50,7 +50,7 @@ bot.onText(/\/help.*/, (msg) => {
 
 bot.on('callback_query', (msg)=>{
 	console.log(msg)
-	bot.sendMessage(msg.id, JSON.stringify(msg))
+	bot.answerCallbackQuery(msg.id, JSON.stringify(msg))
 })
 
 /*

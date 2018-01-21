@@ -7,8 +7,6 @@ const DB = process.env.MONGO_DB || 'test'
 
 const url = `mongodb://${HOST}:${PORT}/${DB}`;
 
-let db;
-
 /**
 *
 db.ratings.createIndex({'tconst':1})
@@ -19,7 +17,7 @@ class Database{
 	constructor(){
 		MongoClient.connect(url, (err, client) => {
 			console.log("Connected to mongodb");
-			db = client.db(DB);
+			const db = client.db(DB);
 			this.collection = db.collection('titles')
 		});
 	}

@@ -10,6 +10,7 @@ class TitlesController{
 			const doc = await this.database.searchCustom()
 			res.status(200).send(doc)
 		}catch(err){
+			console.log(err)
 			res.status(500).end()
 		}
 

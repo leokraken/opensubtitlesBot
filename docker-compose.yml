@@ -9,10 +9,10 @@ services:
   api:
     environment:
        - MONGO_HOST=database
-       - MONGO_PORT= 27017
+       - MONGO_PORT=27017
        - MONGO_DB=imdb
     build:
       context: './api'
     ports:
-      - "8080:8080
+      - "8080:8080"
 

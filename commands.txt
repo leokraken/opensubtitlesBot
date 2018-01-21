@@ -13,3 +13,22 @@ mongoimport --host mongodb --db imdb --collection titles --type tsv --file /imdb
 ## import ratings
 mongoimport --host mongodb --db imdb --collection ratings --type tsv --file /imdb/title.ratings.tsv --headerline
 
+
+
+#PostgreSQL
+create table ratings(tconst varchar, average_rating numeric(2), votes integer);
+create table titles(tconst varchar, title_type varchar, primary_title varchar, original_title varchar, is_adult boolean, start_year varchar, end_year varchar, runtime_minutes varchar, genres varchar);
+
+# copy
+ \COPY ratings from '/csv/ratings.tsv' delimiter E'\t' csv header;
+\COPY titles from '/csv/titles.tsv' delimiter E'\t' QUOTE E'\b' csv header;
+
+# indexes
+
+create index tsv_index_search ON titles using GIN(to_tsvector('english',original_title));
+
+# queryes uses gin index :)
+select * 
+from titles left join ratings on (titles.tconst = ratings.tconst)
+where to_tsvector('english', titles.original_title) @@ to_tsquery('english','dark') 
+order by ratings.votes desc nulls last;

@@ -3,7 +3,7 @@ services:
   database:
     image: postgres
     volumes:
-      - "postgresdata:/var/lib/postgresql/data/pgdata"
+      - "postgresdata:/var/lib/postgresql/data"
   api:
     restart: always
     environment:

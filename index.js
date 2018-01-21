@@ -52,7 +52,7 @@ bot.onText(/\/help.*/, (msg) => {
 bot.on('callback_query', (msg)=>{
 	console.log(msg)
 	bot.answerCallbackQuery(msg.id, 'File send ;)');
-	bot.sendMessage(msg.from.id, msg.data)
+	bot.sendDocument(msg.from.id, msg.data)
 })
 
 bot.onText(/\/doc.*/, (msg) => {

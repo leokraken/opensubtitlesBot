@@ -1,0 +1,15 @@
+docker run -it --link mongodb:mongodb -v /home/leo/Downloads/imdbdata:/csv --rm mongo /bin/bash
+mongoimport --host mongodb --db test --collection titles  --type tsv --file /csv/data.tsv --headerline
+
+
+
+# Vultr
+
+## Connect to container mongo client
+docker run -it --link kraken_mongo-container_1:mongodb -v /home/kraken/imdb:/imdb --rm mongo /bin/bash
+
+## import titles
+mongoimport --host mongodb --db imdb --collection titles --type tsv --file /imdb/title.basics.tsv --headerline
+## import ratings
+mongoimport --host mongodb --db imdb --collection ratings --type tsv --file /imdb/title.ratings.tsv --headerline
+

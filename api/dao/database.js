@@ -16,7 +16,7 @@ db.titles.createIndex({originalTitle: 'text'})
 class Database{
 	constructor(){
 		MongoClient.connect(url, (err, client) => {
-			console.log("Connected to mongodb");
+			console.log("Connected to mongodb", url);
 			const db = client.db(DB);
 			this.collection = db.collection('titles')
 		});
@@ -47,6 +47,7 @@ class Database{
 			{ $sort: { 'rate.numVotes': -1} }
 
 			])).toArray()
+		console.log('data response', results)
 		return results
 	}
 }

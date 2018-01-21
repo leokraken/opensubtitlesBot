@@ -1,0 +1,18 @@
+version: '2'
+services:
+  database:
+    image: mongo
+    volumes:
+      # if you wish to setup additional user accounts specific per DB or with different roles you can use following entry point
+      - "$PWD/mongo/:/data/imdb"
+    # no --auth is needed here as presence of username and password add this option automatically
+  api:
+    environment:
+       - MONGO_HOST=database
+       - MONGO_PORT= 27017
+       - MONGO_DB=imdb
+    build:
+      context: './api'
+    ports:
+      - "8080:8080
+

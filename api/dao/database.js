@@ -1,55 +1,36 @@
-const MongoClient = require('mongodb').MongoClient;
+const pg = require('pg-promise')();
 
 // Connection URL
-const HOST = process.env.MONGO_HOST || 'localhost'
-const PORT = process.env.MONGO_PORT || 27017
-const DB = process.env.MONGO_DB || 'test'
+const HOST = process.env.DB_HOST || 'localhost'
+const PORT = process.env.DB_PORT || 5432
+const DB = process.env.DB_NAME || 'postgres'
+const USER = process.env.DB_USER || 'postgres'
 
-const url = `mongodb://${HOST}:${PORT}/${DB}`;
+
+const url = `postgres://${USER}@${HOST}:${PORT}/${DB}`;
 
 /**
 *
 db.ratings.createIndex({'tconst':1})
 db.titles.createIndex({originalTitle: 'text'})
 */
+const query = `
+select * 
+from titles left join ratings on (titles.tconst = ratings.tconst)
+where to_tsvector('english', titles.original_title) @@ to_tsquery('english','dark') 
+order by ratings.votes desc nulls last;
+`
 
 class Database{
 	constructor(){
-		MongoClient.connect(url, (err, client) => {
-			console.log("Connected to mongodb", url);
-			const db = client.db(DB);
-			this.collection = db.collection('titles')
-		});
+		this.db = pg(url)
 	}
 
 	async search(q){
-		const doc = await this.collection.findOne()
-		return doc
+		const titles = await this.db.any(query)
+		return titles
 	}
 
-	async searchCustom(){
-		const results = (await this.collection.aggregate([
-			{ $match: { $text: { $search: "dark" } } },
-			{
-				$lookup:
-				{
-					from: "ratings",
-					localField: "tconst",
-					foreignField: "tconst",
-					as: "rating"
-				}
-			},
-			{ "$project": { 
-				"tconst": 1, 
-				"originalTitle":1,
-				"rate": { "$arrayElemAt": [ "$rating", 0 ] }
-			}},
-			{ $sort: { 'rate.numVotes': -1} }
-
-			])).toArray()
-		console.log('data response', results)
-		return results
-	}
 }
 
 

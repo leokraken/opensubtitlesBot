@@ -7,7 +7,7 @@ class TitlesController{
 
 	async search(req, res, next){
 		try{
-			const doc = await this.database.searchCustom()
+			const doc = await this.database.search()
 			res.status(200).send(doc)
 		}catch(err){
 			console.log(err)

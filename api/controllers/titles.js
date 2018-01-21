@@ -7,7 +7,9 @@ class TitlesController{
 
 	async search(req, res, next){
 		try{
-			const doc = await this.database.search()
+			const q = req.query.q
+			const limit = req.query.limit
+			const doc = await this.database.search(q, limit)
 			res.status(200).send(doc)
 		}catch(err){
 			console.log(err)

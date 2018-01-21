@@ -16,6 +16,13 @@ mongoimport --host mongodb --db imdb --collection ratings --type tsv --file /imd
 
 
 #PostgreSQL
+## client local
+docker run --rm --link database -v /home/leo/Downloads/imdbdata/:/csv -it postgres psql -h database --port 5432 -U postgres
+
+## vultr 
+docker run --rm --link opensubtitlesbot_database_1 -v /home/leo/Downloads/imdbdata/:/csv --network opensubtitlesbot_default -it postgres psql -h opensubtitlesbot_database_1 --port 5432 -U postgres
+
+# tables
 create table ratings(tconst varchar, average_rating numeric(2), votes integer);
 create table titles(tconst varchar, title_type varchar, primary_title varchar, original_title varchar, is_adult boolean, start_year varchar, end_year varchar, runtime_minutes varchar, genres varchar);
 
@@ -32,3 +39,13 @@ select *
 from titles left join ratings on (titles.tconst = ratings.tconst)
 where to_tsvector('english', titles.original_title) @@ to_tsquery('english','dark') 
 order by ratings.votes desc nulls last;
+
+
+
+# On vultr
+docker run --rm --link opensubtitlesbot_database_1 -v /home/kraken/imdb:/csv --network opensubtitlesbot_default -it postgres psql -h opensubtitlesbot_database_1 --port 5432 -U postgres
+
+
+\COPY ratings from '/csv/title.ratings.tsv' delimiter E'\t' csv header;
+\COPY titles from '/csv/title.basics.tsv' delimiter E'\t' QUOTE E'\b' csv header;
+

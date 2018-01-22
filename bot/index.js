@@ -79,10 +79,11 @@ bot.on('callback_query', (msg)=>{
 
   // Give me imdb callback (select title) I should return subtitles
   // calling opensubtitles api
+  console.log(data)
   if(opensubtitle.isIMDBCallback(data)){
       bot.answerCallbackQuery(msg.id, 'IMDB search!');
 
-      opensubtitle.callbackQueryIMDB(msg).then(subtitles=>{
+      opensubtitle.callbackQueryIMDB(data).then(subtitles=>{
         const buttons = _.map(subtitles, (subtitle)=>{
           return [{
             text: subtitle.filename, 

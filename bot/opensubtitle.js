@@ -38,7 +38,8 @@ const DOWNLOAD_REGEX = /download (.+)/
 
 
 function callbackQueryIMDB(msg){
-	const match = IMDB_REGEX.exec(msg)
+	const match = IMDB_REGEX.exec(msg.data)
+	console.log('callback_query_imdb', msg.data)
 	if(match){
 		const title = match[1]
 		return search(title).then(res => _searchResponse(res))		

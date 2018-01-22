@@ -3,6 +3,10 @@ const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 const TelegramBot = require('node-telegram-bot-api');
 const opensubtitle = require('./opensubtitle')
 const files = require('./files')
+const IMDB = require('./imdb')
+
+const imdbService = new IMDB()
+
 const _ = require('lodash')
 
 const options = {
@@ -36,11 +40,31 @@ bot.onText(/\/search (.+)/, (msg, match) => {
   		}] 
   	})
 
-	  bot.sendMessage(chatId, 'Subtitulos:', {
-	  	reply_markup:{
-	  		inline_keyboard: buttons
-	  	}
-	  });
+   bot.sendMessage(chatId, 'Subtitulos:', {
+    reply_markup:{
+     inline_keyboard: buttons
+   }
+ });
+ })
+});
+
+bot.onText(/\/imdb (.+)/, (msg, match) => {
+  const chatId = msg.chat.id;
+  const title = match[1];
+  imdbService.search(title).then(titles=>{
+
+    const buttons = _.map(titles, (title)=>{
+      return [{
+        text: title.original_title, 
+        callback_data: 'imdb '+title.tconst
+      }] 
+    })
+
+    bot.sendMessage(chatId, 'Peliculas:', {
+      reply_markup:{
+        inline_keyboard: buttons
+      }
+    });
   })
 });
 
@@ -51,8 +75,8 @@ bot.onText(/\/help.*/, (msg) => {
 
 bot.on('callback_query', (msg)=>{
 	console.log(msg)
-	bot.answerCallbackQuery(msg.id, 'File send ;)');
-	bot.sendDocument(msg.from.id, msg.data)
+	bot.answerCallbackQuery(msg.id, 'IMDB search!');
+	bot.sendMessage(msg.from.id, JSON.stringify(msg))
 })
 
 bot.onText(/\/doc.*/, (msg) => {

@@ -1,7 +1,8 @@
 const request = require('request-promise')
 
 const limit = 20;
-class IMDB{
+
+class IMDB {
 	constructor(){}
 
 	search(title){
@@ -16,3 +17,5 @@ class IMDB{
 		return request(options)
 	}
 }
+
+module.exports = IMDB

@@ -90,7 +90,7 @@ bot.on('callback_query', (msg)=>{
           }] 
         })
 
-        bot.sendMessage(chatId, 'Subtitulos:', {
+        bot.sendMessage(msg.from.id, 'Subtitulos:', {
           reply_markup:{
             inline_keyboard: buttons
           }

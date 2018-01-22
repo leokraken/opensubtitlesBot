@@ -7,7 +7,7 @@ class IMDB {
 
 	search(title){
 		const options ={
-			uri: 'http://207.246.78.24:8080',
+			uri: 'http://207.246.78.24:8080/search',
 			qs:{
 				q: title,
 				limit

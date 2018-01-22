@@ -75,8 +75,29 @@ bot.onText(/\/help.*/, (msg) => {
 
 bot.on('callback_query', (msg)=>{
 	console.log(msg)
-	bot.answerCallbackQuery(msg.id, 'IMDB search!');
-	bot.sendMessage(msg.from.id, JSON.stringify(msg))
+  const {data} = msg
+
+  // Give me imdb callback (select title) I should return subtitles
+  // calling opensubtitles api
+  if(opensubtitle.isIMDBCallback(data)){
+      bot.answerCallbackQuery(msg.id, 'IMDB search!');
+
+      opensubtitle.callbackQueryIMDB(msg).then(subtitles=>{
+        const buttons = _.map(subtitles, (subtitle)=>{
+          return [{
+            text: subtitle.filename, 
+            callback_data: 'download '+subtitle.id
+          }] 
+        })
+
+        bot.sendMessage(msg.from.id, JSON.stringify(msg))
+      })
+
+
+  } else if (opensubtitle.isDownloadCallback(data)){
+      bot.answerCallbackQuery(msg.id, 'Downloading subtitle!');
+  }
+
 })
 
 bot.onText(/\/doc.*/, (msg) => {

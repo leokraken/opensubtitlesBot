@@ -19,7 +19,7 @@ function search(imdb){
 	    //extensions: ['srt', 'vtt'], // Accepted extensions, defaults to 'srt'. 
 	    limit: 'all',                 // Can be 'best', 'all' or an 
 	                                // arbitrary nb. Defaults to 'best' 
-	    imdbid: 'tt5753856',           // 'tt528809' is fine too. 
+	    imdbid: imdb,           // 'tt528809' is fine too. 
 	    //fps: '23.96',               // Number of frames per sec in the video. 
 	    query: 'dark',   // Text-based query, this is not recommended. 
 	    gzip: false                  // returns url to gzipped subtitles, defaults to false 
@@ -29,7 +29,37 @@ function search(imdb){
 	})
 }
 
+function _searchResponse(response){
+	return response.es
+}
+
+const IMDB_REGEX = /imdb (.+)/
+const DOWNLOAD_REGEX = /download (.+)/
+
+
+function callbackQueryIMDB(message){
+	const match = IMDB_REGEX.exec(message)
+	if(match){
+		const title = match[1]
+		return search(title).then(res => _searchResponse(res))		
+	}
+	return Promise.reject()
+}
+
+function isDownloadCallback(msg){
+	return DOWNLOAD_REGEX.exec(message)
+}
+
+function isIMDBCallback(msg){
+	return IMDB_REGEX.exec(message)
+}
+
 module.exports = {
-	search
+	search,
+	callbackQueryIMDB,
+
+	//regex
+	isDownloadCallback,
+	isIMDBCallback
 }
 

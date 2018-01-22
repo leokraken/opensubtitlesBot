@@ -37,8 +37,8 @@ const IMDB_REGEX = /imdb (.+)/
 const DOWNLOAD_REGEX = /download (.+)/
 
 
-function callbackQueryIMDB(message){
-	const match = IMDB_REGEX.exec(message)
+function callbackQueryIMDB(msg){
+	const match = IMDB_REGEX.exec(msg)
 	if(match){
 		const title = match[1]
 		return search(title).then(res => _searchResponse(res))		
@@ -47,11 +47,11 @@ function callbackQueryIMDB(message){
 }
 
 function isDownloadCallback(msg){
-	return DOWNLOAD_REGEX.exec(message)
+	return DOWNLOAD_REGEX.exec(msg)
 }
 
 function isIMDBCallback(msg){
-	return IMDB_REGEX.exec(message)
+	return IMDB_REGEX.exec(msg)
 }
 
 module.exports = {

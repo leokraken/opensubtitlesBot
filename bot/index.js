@@ -79,7 +79,6 @@ bot.on('callback_query', (msg)=>{
 
   // Give me imdb callback (select title) I should return subtitles
   // calling opensubtitles api
-  console.log(data)
   if(opensubtitle.isIMDBCallback(data)){
       bot.answerCallbackQuery(msg.id, 'IMDB search!');
 
@@ -91,7 +90,11 @@ bot.on('callback_query', (msg)=>{
           }] 
         })
 
-        bot.sendMessage(msg.from.id, JSON.stringify(msg))
+        bot.sendMessage(chatId, 'Subtitulos:', {
+          reply_markup:{
+            inline_keyboard: buttons
+          }
+        });
       })
 
 

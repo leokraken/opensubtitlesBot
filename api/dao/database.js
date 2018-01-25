@@ -14,7 +14,7 @@ const url = `postgres://${USER}@${HOST}:${PORT}/${DB}`;
 db.ratings.createIndex({'tconst':1})
 db.titles.createIndex({originalTitle: 'text'})
 */
-const query = "select * from titles left join ratings on (titles.tconst = ratings.tconst) where to_tsvector('english', titles.original_title) @@ to_tsquery('english', ${q}) order by ratings.votes desc nulls last limit ${limit}"
+const query = "select * from titles left join ratings on (titles.tconst = ratings.tconst) where to_tsvector('english', titles.original_title) @@ plainto_tsquery('english', ${q}) order by ratings.votes desc nulls last limit ${limit}"
 
 class Database{
 	constructor(){

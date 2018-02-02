@@ -1,19 +1,23 @@
-image: docker:latest
 
-services:
-  - docker:dind
 
 stages:
   - test
   - package
+  - deploy
 
 api-test:
+  image: docker:latest
+  services:
+    - docker:dind
   stage: test
   script:
     - docker build -t registry.gitlab.com/leokraken/opensubtitlesbot/api:latest api
     - docker run --rm registry.gitlab.com/leokraken/opensubtitlesbot/api:latest npm test
 
 api-package:
+  image: docker:latest
+  services:
+    - docker:dind
   stage: package
   only:
     - master
@@ -21,3 +25,12 @@ api-package:
     - docker build -t registry.gitlab.com/leokraken/opensubtitlesbot/api:latest api
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN registry.gitlab.com
     - docker push registry.gitlab.com/leokraken/opensubtitlesbot/api
+
+heroku-deploy:
+  image: ruby:latest
+  stage: deploy 
+  only:
+    - master
+  script:
+    - gem install dpl
+    - dpl --provider=heroku --app=opensubtitlebot --api-key=$HEROKU_API_KEY

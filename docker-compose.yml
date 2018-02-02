@@ -15,6 +15,7 @@ services:
       context: './api'
     ports:
       - "8080:8080"
+    command: "npm run start"
 
 volumes:
    postgresdata:

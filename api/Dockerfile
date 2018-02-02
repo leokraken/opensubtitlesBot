@@ -8,4 +8,3 @@ RUN npm install
 COPY . /app
 
 EXPOSE 8080
-ENTRYPOINT ["npm", "start"]

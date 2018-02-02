@@ -1,13 +1,14 @@
 
-const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 const TelegramBot = require('node-telegram-bot-api');
-const opensubtitle = require('./opensubtitle')
+const _ = require('lodash')
+
 const files = require('./files')
 const IMDB = require('./imdb')
+const CallbackService = require('./services/callback_service')
 
+const TOKEN = process.env.TELEGRAM_TOKEN || 'YOUR_TELEGRAM_BOT_TOKEN';
 const imdbService = new IMDB()
 
-const _ = require('lodash')
 
 const options = {
   webHook: {
@@ -56,7 +57,7 @@ bot.onText(/\/imdb (.+)/, (msg, match) => {
     const buttons = _.map(titles, (title)=>{
       return [{
         text: title.original_title, 
-        callback_data: 'imdb '+title.tconst
+        callback_data: 'imdb '+ title.tconst
       }] 
     })
 
@@ -77,33 +78,48 @@ bot.on('callback_query', (msg)=>{
 	console.log(msg)
   const {data} = msg
 
-  // Give me imdb callback (select title) I should return subtitles
-  // calling opensubtitles api
-  if(opensubtitle.isIMDBCallback(data)){
-      bot.answerCallbackQuery(msg.id, 'IMDB search!');
-
-      opensubtitle.callbackQueryIMDB(data).then(subtitles=>{
-        const buttons = _.map(subtitles, (subtitle)=>{
-          return [{
-            text: subtitle.filename, 
-            callback_data: 'download '+subtitle.id
-          }] 
-        })
-
-        bot.sendMessage(msg.from.id, 'Subtitulos:', {
-          reply_markup:{
-            inline_keyboard: buttons
-          }
-        });
-      })
+  // Create event emitter with callbacks
+  const callbackService = new CallbackService();
 
 
-  } else if (opensubtitle.isDownloadCallback(data)){
-      bot.answerCallbackQuery(msg.id, 'Downloading subtitle!');
-  }
+  // On download display message 
+  callbackService.on('downsub', url => {
+    console.log('downloading ...',url)
+    const stream = files.downloadFile(url)
+    bot.sendDocument(msg.message.chat.id, stream);
+  });
+
+  // On imdb event show subtitles from opensubtitles
+  callbackService.on('imdb', subtitles =>{
+    const buttons = _.map(subtitles, subtitle=>{
+      return [{
+        text: subtitle.filename, 
+        callback_data: subtitle.url
+      }] 
+    })
+
+    bot.sendMessage(msg.from.id, 'Subtitles:', {
+      reply_markup:{
+        inline_keyboard: buttons
+      }
+    });
+  });
+
+    // On download display message 
+  callbackService.on('test', url => {
+    console.log('test ...',url)
+  });
+
+  callbackService.on('error', err=>{
+    console.log(err)
+  });
+
+  callbackService.run(data);
+
 
 })
 
+//https://dl.opensubtitles.org/en/download/src-api/vrf-19a60c4f/sid-ULFWKnCi3mNPgChBWlbEEXnAJFd/filead/
 bot.onText(/\/doc.*/, (msg) => {
   const url = 'https://dl.opensubtitles.org/en/download/src-api/vrf-19e20c62/sid-LUrC,E4i2nFlPtlmJ-kzFUU1Ox3/filead/1955760897'
   const stream = files.downloadFile(url)
